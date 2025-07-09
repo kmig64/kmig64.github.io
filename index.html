@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>시간대 매칭 테스트</title>
+    <title>신당고 배드민턴 짝꿍</title>  <!-- 여기 수정 -->
 </head>
 <body>
+
+<h1>신당고 배드민턴 짝꿍</h1>  <!-- 본문 상단 제목 추가 -->
 
 <h2>사용자 입력</h2>
 <form id="userForm">
@@ -24,17 +26,15 @@
 <div id="allUsers"></div>
 
 <script>
-    // 메모리에만 저장하는 사용자 목록
     const users = [];
 
-    // 폼 제출 처리
     document.getElementById('userForm').addEventListener('submit', function (event) {
         event.preventDefault();
 
         const formData = new FormData(event.target);
         const hour = parseInt(formData.get('hour'));
         const minute = parseInt(formData.get('minute'));
-        const totalMinutes = hour * 60 + minute;  // 시:분 → 총 분으로 변환
+        const totalMinutes = hour * 60 + minute;
 
         const user = {
             name: formData.get('name'),
@@ -43,13 +43,10 @@
             time: totalMinutes
         };
 
-        // 시간 ±20분 범위로 매칭
         const matches = users.filter(u => Math.abs(u.time - user.time) <= 20);
 
-        // 사용자 추가
         users.push(user);
 
-        // 매칭 결과 표시
         const resultDiv = document.getElementById('result');
         if (matches.length > 0) {
             resultDiv.innerHTML = `<strong>매칭된 사용자:</strong><br>` + matches.map(u =>
@@ -59,11 +56,9 @@
             resultDiv.innerHTML = "매칭된 사용자가 없습니다.";
         }
 
-        // 전체 사용자 목록 업데이트
         updateAllUsers();
     });
 
-    // 전체 사용자 목록 표시 함수
     function updateAllUsers() {
         const allUsersDiv = document.getElementById('allUsers');
         allUsersDiv.innerHTML = users.map(u =>
@@ -71,7 +66,6 @@
         ).join('<br>');
     }
 
-    // 분을 "시:분" 형태 문자열로 변환
     function formatTime(totalMinutes) {
         const hours = Math.floor(totalMinutes / 60);
         const minutes = totalMinutes % 60;
