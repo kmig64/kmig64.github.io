@@ -10,7 +10,9 @@
     이름: <input type="text" name="name" required><br>
     성별: <input type="text" name="gender" required><br>
     학년: <input type="number" name="grade" required><br>
-    원하는 시간대 (분 단위, 예: 540은 9시): <input type="number" name="time" required><br>
+    원하는 시간대:<br>
+    시: <input type="number" name="hour" min="0" max="23" required>
+    분: <input type="number" name="minute" min="0" max="59" required><br>
     <button type="submit">신청하기</button>
 </form>
 
@@ -30,11 +32,15 @@
         event.preventDefault();
 
         const formData = new FormData(event.target);
+        const hour = parseInt(formData.get('hour'));
+        const minute = parseInt(formData.get('minute'));
+        const totalMinutes = hour * 60 + minute;  // 시:분 → 총 분으로 변환
+
         const user = {
             name: formData.get('name'),
             gender: formData.get('gender'),
             grade: formData.get('grade'),
-            time: parseInt(formData.get('time'))
+            time: totalMinutes
         };
 
         // 시간 ±20분 범위로 매칭
@@ -47,7 +53,7 @@
         const resultDiv = document.getElementById('result');
         if (matches.length > 0) {
             resultDiv.innerHTML = `<strong>매칭된 사용자:</strong><br>` + matches.map(u =>
-                `이름: ${u.name}, 성별: ${u.gender}, 학년: ${u.grade}, 시간대: ${u.time}`
+                `이름: ${u.name}, 성별: ${u.gender}, 학년: ${u.grade}, 시간대: ${formatTime(u.time)}`
             ).join('<br>');
         } else {
             resultDiv.innerHTML = "매칭된 사용자가 없습니다.";
@@ -61,8 +67,15 @@
     function updateAllUsers() {
         const allUsersDiv = document.getElementById('allUsers');
         allUsersDiv.innerHTML = users.map(u =>
-            `이름: ${u.name}, 성별: ${u.gender}, 학년: ${u.grade}, 시간대: ${u.time}`
+            `이름: ${u.name}, 성별: ${u.gender}, 학년: ${u.grade}, 시간대: ${formatTime(u.time)}`
         ).join('<br>');
+    }
+
+    // 분을 "시:분" 형태 문자열로 변환
+    function formatTime(totalMinutes) {
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        return `${hours}시 ${minutes}분`;
     }
 </script>
 
