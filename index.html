@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>시간대 매칭 테스트</title>
+</head>
+<body>
+
+<h2>사용자 입력</h2>
+<form id="userForm">
+    이름: <input type="text" name="name" required><br>
+    성별: <input type="text" name="gender" required><br>
+    학년: <input type="number" name="grade" required><br>
+    원하는 시간대 (분 단위, 예: 540은 9시): <input type="number" name="time" required><br>
+    <button type="submit">신청하기</button>
+</form>
+
+<h2>매칭 결과</h2>
+<div id="result"></div>
+
+<hr>
+<h2>현재 신청자 목록</h2>
+<div id="allUsers"></div>
+
+<script>
+    // 메모리에만 저장하는 사용자 목록
+    const users = [];
+
+    // 폼 제출 처리
+    document.getElementById('userForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(event.target);
+        const user = {
+            name: formData.get('name'),
+            gender: formData.get('gender'),
+            grade: formData.get('grade'),
+            time: parseInt(formData.get('time'))
+        };
+
+        // 시간 ±20분 범위로 매칭
+        const matches = users.filter(u => Math.abs(u.time - user.time) <= 20);
+
+        // 사용자 추가
+        users.push(user);
+
+        // 매칭 결과 표시
+        const resultDiv = document.getElementById('result');
+        if (matches.length > 0) {
+            resultDiv.innerHTML = `<strong>매칭된 사용자:</strong><br>` + matches.map(u =>
+                `이름: ${u.name}, 성별: ${u.gender}, 학년: ${u.grade}, 시간대: ${u.time}`
+            ).join('<br>');
+        } else {
+            resultDiv.innerHTML = "매칭된 사용자가 없습니다.";
+        }
+
+        // 전체 사용자 목록 업데이트
+        updateAllUsers();
+    });
+
+    // 전체 사용자 목록 표시 함수
+    function updateAllUsers() {
+        const allUsersDiv = document.getElementById('allUsers');
+        allUsersDiv.innerHTML = users.map(u =>
+            `이름: ${u.name}, 성별: ${u.gender}, 학년: ${u.grade}, 시간대: ${u.time}`
+        ).join('<br>');
+    }
+</script>
+
+</body>
+</html>
